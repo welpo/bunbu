@@ -1,0 +1,68 @@
+---
+
+---
+
+<div class='pixel-art-background'>
+    <div class='layer layer-1'></div>
+    <div class='layer layer-2'></div>
+    <div class='layer layer-3'></div>
+    <div class='layer layer-4'></div>
+</div>
+
+<style>
+    .pixel-art-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: -1;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .layer {
+        --background-size: 2400px;
+        -ms-interpolation-mode: nearest-neighbor;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-size: var(--background-size) 100%;
+        image-rendering: pixelated;
+        width: 100%;
+        height: 100%;
+    }
+
+    .layer-1 {
+        background-image: url("/assets/images/bg/1.png");
+        background-size: auto 100%;
+    }
+
+    .layer-2 {
+        background-image: url("/assets/images/bg/2.png");
+    }
+
+    .layer-3 {
+        animation: slideBackground 450s linear infinite;
+        background-image: url("/assets/images/bg/3.png");
+    }
+
+    .layer-4 {
+        animation: slideBackground 230s linear infinite;
+        background-image: url("/assets/images/bg/4.png");
+    }
+
+    @keyframes slideBackground {
+        from {
+            background-position: var(--background-size) 0;
+        }
+        to {
+            background-position: 0 0;
+        }
+    }
+
+    @media (prefers-color-scheme: dark) {
+        .pixel-art-background {
+            filter: brightness(0.4) hue-rotate(200deg) saturate(0.8);
+        }
+    }
+</style>

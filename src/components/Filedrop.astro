@@ -1,0 +1,102 @@
+---
+interface Props {
+    id: string;
+    text: string;
+    acceptedFiles?: string;
+}
+
+const { id, text, acceptedFiles } = Astro.props;
+---
+
+<div id={id} class='drop_zone'>
+    <span>{text}</span>
+    <input type='file' class='file_input' accept={acceptedFiles ?? "*"} />
+</div>
+
+<script>
+    import { $ } from "@/utils/dom-selector.ts";
+
+    const $dropZone = $(".drop_zone");
+    const $span = $(".drop_zone span");
+    const $fileInput = $(".drop_zone .file_input") as HTMLInputElement;
+
+    $dropZone.addEventListener("dragover", (event) => {
+        event.preventDefault();
+        $dropZone.classList.add("dragover");
+    });
+
+    $dropZone.addEventListener("dragleave", () => {
+        $dropZone.classList.remove("dragover");
+    });
+
+    $dropZone.addEventListener("drop", async (event) => {
+        event.preventDefault();
+        $dropZone.classList.remove("dragover");
+
+        if (event.dataTransfer) {
+            const files = event.dataTransfer.files;
+            const acceptedFiles = $fileInput.accept;
+            if (files && files[0].name.endsWith(acceptedFiles)) {
+                $fileInput.files = files;
+                $fileInput.dispatchEvent(new Event("change", { bubbles: true }));
+            }
+        }
+    });
+
+    $fileInput.addEventListener("change", async (event) => {
+        const target = event.target as HTMLInputElement;
+        if (!target.files?.length) return;
+        const file = target.files[0];
+        if (file) {
+            $dropZone.classList.add("active");
+            $span.innerText = `Selected File: ${file.name}`;
+        }
+    });
+</script>
+
+<style>
+    .drop_zone {
+        display: flex;
+        position: relative;
+        justify-content: center;
+        align-items: center;
+        transition: all 0.3s ease-in-out;
+        cursor: pointer;
+        box-sizing: border-box;
+        border: 0.2rem dashed #ccc;
+        border-radius: 15px;
+        padding: clamp(1rem, 5vw, 2rem);
+        aspect-ratio: 4 / 3;
+        width: 100%;
+        max-width: 27rem;
+        height: auto;
+        min-height: 10rem;
+        color: #666;
+        font-size: clamp(1rem, 4vw, 1.5rem);
+        font-family: Arial, sans-serif;
+        user-select: none;
+        text-align: center;
+    }
+
+    @media (max-width: 480px) {
+        .drop_zone {
+            aspect-ratio: 3 / 2;
+            min-height: 8rem;
+        }
+    }
+    .drop_zone.active {
+        border-color: #afb6bc;
+        background-color: #e8eced;
+    }
+    .drop_zone.dragover {
+        border-color: #aab7c4;
+        background-color: #eaf5fa;
+    }
+    .drop_zone .file_input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        width: 100%;
+        height: 100%;
+    }
+</style>

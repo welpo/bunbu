@@ -1,0 +1,153 @@
+---
+import type { HTMLTag, Polymorphic } from "astro/types";
+
+type Variant = "none" | "primary" | "secondary";
+const validIcons = ["clipboard", "file", "person", "none"] as const;
+type Icon = (typeof validIcons)[number];
+type Props<Tag extends HTMLTag> = Polymorphic<{
+    as: Tag;
+    variant?: Variant;
+    icon?: Icon;
+}>;
+
+const { as: Tag, variant = "none", icon = "none", ...props } = Astro.props;
+const variantClass = variant === "none" ? null : variant;
+
+if (icon !== "none" && !validIcons.includes(icon)) {
+    throw new Error(
+        `Invalid icon: ${icon}. Valid options are: ${validIcons.join(", ")}`
+    );
+}
+const iconClass = icon !== "none" ? `icon-${icon}` : "";
+---
+
+<Tag class:list={[variantClass + "-button", iconClass]} {...props}>
+    <span class='button-content'>
+        {icon !== "none" && <span class='button-icon' />}
+        <span class='button-text'>
+            <slot />
+        </span>
+    </span>
+</Tag>
+
+<style>
+    button {
+        position: relative;
+        flex-grow: 1;
+        transform: translateY(-5px);
+        transition: all 0.1s ease;
+        cursor: pointer;
+        box-shadow: 0 5px 0 var(--shadow-color);
+        border: none;
+        border-radius: var(--border-radius);
+        background-color: var(--accent-color);
+        padding: var(--space-sm) var(--space-md);
+        min-height: var(--touch-target-min);
+        color: var(--text-color);
+        font-size: xx-small;
+        font-family: var(--header-font);
+    }
+
+    button:active:not(:disabled) {
+        transform: translateY(0);
+        box-shadow: none;
+    }
+
+    button:disabled {
+        transform: none;
+        cursor: not-allowed;
+        box-shadow: none;
+        background-color: var(--border-color);
+    }
+
+    button:disabled:hover {
+        background-color: var(--border-color);
+    }
+
+    button:disabled::after {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0;
+        font-size: 1.5em;
+    }
+
+    button:disabled:hover::after {
+        opacity: 1;
+    }
+
+    button[aria-busy="true"] {
+        animation: stripes 1s linear infinite;
+        background-image: linear-gradient(
+            -45deg,
+            var(--accent-color) 25%,
+            var(--button-hover-color) 25%,
+            var(--button-hover-color) 50%,
+            var(--accent-color) 50%,
+            var(--accent-color) 75%,
+            var(--button-hover-color) 75%,
+            var(--button-hover-color) 100%
+        );
+        background-size: 40px 40px;
+    }
+
+    @keyframes stripes {
+        0% {
+            background-position: 0 0;
+        }
+        100% {
+            background-position: 40px 0;
+        }
+    }
+
+    button:hover {
+        background-color: var(--button-hover-color);
+    }
+
+    .primary-button {
+        position: relative;
+        width: 100%;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .secondary-button {
+        transition: background-color 0.3s ease;
+        background-color: var(--button-hover-color);
+        color: var(--text-color);
+    }
+
+    .secondary-button:hover:not(:disabled) {
+        background-color: var(--accent-color);
+    }
+
+    .button-content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .button-icon {
+        display: inline-block;
+        margin-right: 1em;
+        background-position: center;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-color: var(--text-color);
+        width: 2.2em;
+        height: 2.2em;
+    }
+
+    .icon-clipboard .button-icon {
+        -webkit-mask: url("data:image/svg+xml,%3C%3Fxml version='1.0' encoding='utf-8'%3F%3E%3Csvg viewBox='0 0 500 500' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 78.379 466.666 L 45.291 466.666 L 45.291 66.294 L 78.379 66.294 L 78.379 33.333 L 176.371 33.333 L 176.371 66.427 L 78.379 66.427 L 78.379 466.666 Z M 323.623 33.333 L 176.337 33.333 L 176.337 0.245 L 323.623 0.245 L 323.623 33.333 Z M 421.616 66.294 L 454.71 66.294 L 454.71 466.666 L 421.616 466.666 L 421.616 499.754 L 78.379 499.754 L 78.379 466.666 L 388.789 466.666 L 388.789 66.427 L 323.63 66.427 L 323.63 33.34 L 421.622 33.34 L 421.616 66.294 Z M 176.371 66.421 L 323.657 66.421 L 323.657 99.515 L 176.371 99.515 L 176.371 66.421 Z M 123.551 149.405 L 355.728 149.405 L 355.728 182.499 L 123.551 182.499 L 123.551 149.405 Z M 123.551 227.946 L 355.728 227.946 L 355.728 261.04 L 123.551 261.04 L 123.551 227.946 Z M 123.551 306.487 L 355.728 306.487 L 355.728 339.581 L 123.551 339.581 L 123.551 306.487 Z M 123.551 385.027 L 355.728 385.027 L 355.728 418.122 L 123.551 418.122 L 123.551 385.027 Z' fill-rule='evenodd' style=''/%3E%3C/svg%3E");
+    }
+
+    .icon-file .button-icon {
+        -webkit-mask: url("data:image/svg+xml,%3C%3Fxml version='1.0' encoding='utf-8'%3F%3E%3Csvg viewBox='0 0 500 500' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='374.869' y='31.479' style=''/%3E%3Crect x='13258.569' y='7616.997' width='31.218' height='31.218' style='' transform='matrix(1, 0, 0, 1, -12852.484375, -7554.301269531249)'/%3E%3Cpolygon points='437.305 93.913 437.305 125.131 343.653 125.131 343.653 156.347 437.305 156.347 437.305 468.52 468.52 468.52 468.52 93.913' style=''/%3E%3Crect x='31.48' y='31.479' width='31.218' height='437.041' style=''/%3E%3Crect x='62.699' y='468.52' width='374.607' height='31.218' style=''/%3E%3Cpolygon points='312.436 125.131 343.653 125.131 343.653 31.479 374.869 31.479 374.869 0.261 62.699 0.261 62.699 31.479 312.436 31.479' style=''/%3E%3Crect x='125.129' y='187.565' width='249.737' height='31.218' style=''/%3E%3Crect x='125.132' y='281.217' width='218.522' height='31.218' style=''/%3E%3Crect x='125.132' y='374.868' width='187.304' height='31.218' style=''/%3E%3C/svg%3E");
+    }
+
+    .icon-person .button-icon {
+        -webkit-mask: url("data:image/svg+xml,%3C%3Fxml version='1.0' encoding='utf-8'%3F%3E%3Csvg viewBox='0 0 500 500' xmlns='http://www.w3.org/2000/svg'%3E%3Cg data-name='Layer 2' transform='matrix(1.9586060047149658, 0, 0, 1.9586060047149658, 125.08011627197266, 0.16022299230098724)' style=''%3E%3Cg data-name='Layer 1'%3E%3Cpath d='M91.11,109.34V91.11h18.23V54.67h18.22V36.45H109.34V0H36.45V36.45H18.22V54.67H36.45v72.89H0v54.67H18.22V145.78H36.45V255.12H54.67V218.67H72.89v36.45H91.11V145.78h18.23v36.45h18.22V127.56H72.89V109.34Zm0-36.45H72.89V54.67H91.11Z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+</style>

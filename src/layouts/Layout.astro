@@ -1,0 +1,88 @@
+---
+import "@/styles/global.css";
+import { pwaInfo } from "virtual:pwa-info";
+
+interface Props {
+    title: string;
+    description: string;
+}
+
+const { description, title } = Astro.props;
+const siteUrl = Astro.site?.toString().replace(/\/$/, "") || "";
+const socialCardUrl = `${siteUrl}/social_card.jpg`;
+---
+
+<!doctype html>
+<html lang='en'>
+    <head>
+        <meta charset='UTF-8' />
+        <meta name='description' content={description} />
+        <meta name='viewport' content='width=device-width, initial-scale=1' />
+
+        <!-- Twitter -->
+        <meta name='twitter:card' content='summary_large_image' />
+        <meta name='twitter:title' content={title} />
+        <meta name='twitter:description' content={description} />
+        <meta name='twitter:image' content={socialCardUrl} />
+
+        <!-- OpenGraph -->
+        <meta property='og:type' content='website' />
+        <meta property='og:url' content={siteUrl} />
+        <meta property='og:title' content={title} />
+        <meta property='og:description' content={description} />
+        <meta property='og:image' content={socialCardUrl} />
+        <meta property='og:image:width' content='1800' />
+        <meta property='og:image:height' content='1005' />
+        <meta property='og:locale' content='en' />
+        <meta property='og:site_name' content='bunbu' />
+
+        <!-- Favicon -->
+        <link rel='icon' type='image/png' sizes='32x32' href='/favicon.png' />
+        <link rel='icon' type='image/x-icon' href='/favicon.ico' />
+
+        <!-- PWA theme colors -->
+        <meta
+            name='theme-color'
+            media='(prefers-color-scheme: light)'
+            content='#a7b2ec'
+        />
+        <meta
+            name='theme-color'
+            media='(prefers-color-scheme: dark)'
+            content='#1a1a2e'
+        />
+
+        <!-- Apple PWA meta tags -->
+        <meta name='apple-mobile-web-app-capable' content='yes' />
+        <meta name='apple-mobile-web-app-status-bar-style' content='default' />
+        <meta name='apple-mobile-web-app-title' content='bunbu' />
+        <link rel='apple-touch-icon' href='/apple-touch-icon.png' />
+
+        <!-- Mobile web app -->
+        <meta name='mobile-web-app-capable' content='yes' />
+
+        <!-- PWA manifest -->
+        {pwaInfo && <Fragment set:html={pwaInfo.webManifest.linkTag} />}
+
+        <meta name='generator' content={Astro.generator} />
+        <title>{title}</title>
+    </head>
+
+    <body>
+        <slot />
+        <script src='../scripts/main.ts'></script>
+        <script>
+            import { registerSW } from "virtual:pwa-register";
+
+            registerSW({
+                immediate: true,
+                onRegisteredSW(swScriptUrl) {
+                    console.log("SW registered:", swScriptUrl);
+                },
+                onOfflineReady() {
+                    console.log("bunbu is ready to work offline");
+                },
+            });
+        </script>
+    </body>
+</html>

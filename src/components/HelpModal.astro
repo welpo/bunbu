@@ -1,0 +1,123 @@
+---
+import Modal from "./Modal.astro";
+---
+
+<Modal id='help-modal' title='about bunbu'>
+    <div class='faq-section'>
+        <div class='chat-container'>
+            <div class='chat-message question'>
+                <p>what is bunbu?</p>
+            </div>
+            <div class='chat-message answer'>
+                <p>
+                    bunbu is a web application that performs frequency analysis on
+                    japanese text. it breaks down the text into individual words in
+                    their dictionary form, and provides statistics on their usage.
+                </p>
+            </div>
+
+            <div class='chat-message question'>
+                <p>what is the "dictionary form" of a word?</p>
+            </div>
+            <div class='chat-message answer'>
+                <p>
+                    the dictionary form is the basic version of a word; the way you'd
+                    find it in a dictionary. for example, the verb「食べる」(to eat) is
+                    the dictionary form of「食べた」(ate),「食べている」(eating), etc.
+                </p>
+            </div>
+
+            <div class='chat-message question'>
+                <p>what inspired bunbu?</p>
+            </div>
+            <div class='chat-message answer'>
+                <p>
+                    bunbu was inspired by <a
+                        href='https://osc.garden/blog/ichiko-aoba-lyrics-japanese-morphology/'
+                        >this article</a
+                    > on analysing japanese song lyrics to learn japanese.
+                </p>
+            </div>
+
+            <div class='chat-message question'>
+                <p>how is my privacy protected when using bunbu?</p>
+            </div>
+            <div class='chat-message answer'>
+                <p>your data never leaves your device:</p>
+                <ul>
+                    <li>
+                        <strong>local processing:</strong> all text analysis is performed
+                        on your device
+                    </li>
+                    <li>
+                        <strong>no data collection:</strong> neither your text nor the analysis
+                        results are sent to any server
+                    </li>
+                    <li>
+                        <strong>no ai:</strong> your text is not used to train any machine
+                        learning models
+                    </li>
+                    <li>
+                        <strong>no cookies:</strong> this site doesn't use cookies or any
+                        other tracking technologies
+                    </li>
+                    <li>
+                        <strong>open source:</strong> the code is open source and available
+                        for inspection <a href='https://github.com/welpo/bunbu'
+                            >on github</a
+                        >
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</Modal>
+
+<style>
+    .chat-container {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-md);
+        border-radius: 8px;
+        padding: var(--space-md);
+    }
+
+    .chat-message {
+        box-shadow:
+            rgba(0, 0, 0, 0.1) 0px 1px 3px 0px,
+            rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+        border-radius: var(--border-radius);
+        padding: 12px;
+        max-width: 80%;
+        line-height: 1.4;
+    }
+
+    .chat-message p {
+        margin: 0;
+    }
+
+    .chat-message.question {
+        align-self: flex-end;
+        background-color: #dcf8c6;
+        color: #000;
+    }
+
+    .chat-message.answer {
+        align-self: flex-start;
+        background-color: #fff;
+        color: #000;
+    }
+
+    .chat-message.answer ul {
+        margin: 8px 0;
+        padding-left: 20px;
+    }
+
+    .chat-message.answer li {
+        margin-bottom: 4px;
+    }
+
+    .chat-message a:hover {
+        text-decoration: underline;
+    }
+</style>

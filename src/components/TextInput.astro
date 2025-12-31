@@ -1,0 +1,115 @@
+---
+
+---
+
+<div class='text-input-container'>
+    <div class='text-input-dropzone'>
+        <textarea
+            id='inputText'
+            rows='5'
+            cols='50'
+            placeholder='Enter Japanese text here — ここに日本語を入力'></textarea>
+        <div class='drop-overlay'>
+            <span>Drop files here</span>
+        </div>
+    </div>
+    <div id='warningMessage' class='warning hidden'></div>
+</div>
+
+<style>
+    #warningMessage {
+        margin-bottom: var(--space-md);
+        border: 0.125rem solid var(--warning-color);
+        border-radius: var(--border-radius);
+        background-color: var(--warning-color);
+        padding: var(--space-sm);
+        color: var(--light-text-color);
+        font-weight: bold;
+        text-align: center;
+    }
+
+    textarea {
+        border: 0.1875rem solid var(--border-color);
+        border-radius: var(--border-radius);
+    }
+
+    textarea {
+        box-sizing: border-box;
+        margin-bottom: var(--space-md);
+        background-color: var(--box-bg-color);
+        padding: var(--space-md);
+        width: 100%;
+        height: 9rem;
+        min-height: 30vmin;
+        max-height: 50rem;
+        resize: vertical;
+        font-size: var(--font-size-base);
+        font-family: var(--sans-serif);
+    }
+
+    textarea.warning {
+        animation: pulse 2s infinite;
+        outline-color: var(--warning-color);
+        border-color: var(--warning-color);
+        background-color: var(--warning-bg-tint);
+    }
+
+    @keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 var(--warning-pulse-start);
+        }
+
+        70% {
+            box-shadow: 0 0 0 10px var(--warning-pulse-end);
+        }
+
+        100% {
+            box-shadow: 0 0 0 0 var(--warning-pulse-end);
+        }
+    }
+
+    /* Drag-and-drop styles */
+    .text-input-dropzone {
+        position: relative;
+    }
+
+    .drop-overlay {
+        display: none;
+        position: absolute;
+        justify-content: center;
+        align-items: center;
+        z-index: 10;
+        transition: opacity 0.2s ease-in-out;
+        margin-bottom: var(--space-md);
+        inset: 0;
+        border: 0.1875rem dashed var(--accent-color);
+        border-radius: var(--border-radius);
+        background-color: var(--drop-overlay-bg);
+        pointer-events: none;
+    }
+
+    .drop-overlay span {
+        border-radius: var(--border-radius);
+        background-color: var(--accent-color);
+        padding: var(--space-sm) var(--space-lg);
+        color: var(--light-text-color);
+        font-weight: bold;
+        font-size: var(--font-size-base);
+        font-family: var(--sans-serif);
+    }
+
+    .text-input-dropzone.dragover .drop-overlay {
+        display: flex;
+    }
+
+    .text-input-dropzone.dragover textarea {
+        border-color: var(--accent-color);
+        background-color: var(--drop-active-bg);
+    }
+
+    @media (prefers-color-scheme: dark) {
+        textarea {
+            color: var(--text-color);
+        }
+    }
+</style>

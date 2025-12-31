@@ -1,0 +1,141 @@
+<div class='theme-switcher'>
+    <input type='checkbox' id='theme-toggle' class='theme-toggle--checkbox' />
+    <label for='theme-toggle' class='theme-toggle--label'>
+        <span class='theme-toggle--label-background'></span>
+    </label>
+</div>
+
+<style>
+    :root {
+        --blue-background: #c2e9f6;
+        --blue-border: #72cce3;
+        --blue-color: #96dcee;
+        --yellow-background: #fffaa8;
+        --yellow-border: #f5eb71;
+        --indigo-background: #808fc7;
+        --indigo-border: #5d6baa;
+        --indigo-color: #6b7abb;
+        --gray-border: #e8e8ea;
+        --gray-dots: #e8e8ea;
+        --white: #fff;
+    }
+
+    .theme-switcher {
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: var(--space-md);
+    }
+
+    .theme-toggle--checkbox {
+        display: none;
+    }
+
+    .theme-toggle--label {
+        display: flex;
+        position: relative;
+        transition: all 350ms ease-in;
+        cursor: pointer;
+        border: 2px solid var(--blue-border);
+        border-radius: 50%;
+        background: var(--blue-color);
+        width: var(--icon-size);
+        height: var(--icon-size);
+        overflow: hidden;
+    }
+
+    .theme-toggle--label-background {
+        position: relative;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        transition: all 150ms ease-in;
+        border-radius: 5px;
+        background: var(--white);
+        width: 10px;
+        height: 5px;
+    }
+
+    .theme-toggle--label-background:before,
+    .theme-toggle--label-background:after {
+        position: absolute;
+        transition: all 150ms ease-in;
+        border-radius: 5px;
+        background: var(--white);
+        width: 100%;
+        height: 100%;
+        content: "";
+    }
+
+    .theme-toggle--label-background:before {
+        top: -5px;
+        left: -5px;
+    }
+
+    .theme-toggle--label-background:after {
+        top: 5px;
+        right: -5px;
+    }
+
+    .theme-toggle--checkbox:checked + .theme-toggle--label {
+        border-color: var(--indigo-border);
+        background: var(--indigo-color);
+    }
+
+    .theme-toggle--checkbox:checked
+        + .theme-toggle--label
+        .theme-toggle--label-background {
+        top: 25%;
+        left: 75%;
+        border-radius: 50%;
+        width: 5px;
+        height: 5px;
+    }
+
+    .theme-toggle--checkbox:checked
+        + .theme-toggle--label
+        .theme-toggle--label-background:before,
+    .theme-toggle--checkbox:checked
+        + .theme-toggle--label
+        .theme-toggle--label-background:after {
+        border-radius: 50%;
+        width: 5px;
+        height: 5px;
+    }
+
+    .theme-toggle--checkbox:checked
+        + .theme-toggle--label
+        .theme-toggle--label-background:before {
+        top: -3px;
+        left: -10px;
+    }
+
+    .theme-toggle--checkbox:checked
+        + .theme-toggle--label
+        .theme-toggle--label-background:after {
+        top: 7px;
+        right: -10px;
+    }
+</style>
+
+<script>
+    const themeToggle = document.getElementById(
+        "theme-toggle"
+    ) as HTMLInputElement | null;
+
+    if (themeToggle) {
+        themeToggle.addEventListener("change", () => {
+            const newTheme = themeToggle.checked ? "dark" : "light";
+            document.documentElement.setAttribute("data-theme", newTheme);
+            localStorage.setItem("theme", newTheme);
+        });
+    } else {
+        console.error("Theme toggle element not found");
+    }
+
+    // Set initial theme
+    const savedTheme = localStorage.getItem("theme") || "light";
+    document.documentElement.setAttribute("data-theme", savedTheme);
+    if (themeToggle) {
+        themeToggle.checked = savedTheme === "dark";
+    }
+</script>

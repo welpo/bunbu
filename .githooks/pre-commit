@@ -1,0 +1,96 @@
+#!/usr/bin/env bash
+set -uo pipefail
+
+# --- Colours ---
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+NC='\033[0m'
+
+# --- Helpers ---
+function print_info() { echo -e "${BLUE}INFO:${NC} $1"; }
+function print_success() { echo -e "${GREEN}SUCCESS:${NC} $1"; }
+function error_exit() { echo -e "${RED}ERROR:${NC} $1" >&2; exit "${2:-1}"; }
+
+# Check if the file contains "TODO".
+function contains_todo() {
+    local file="$1"
+    grep -q "TODO" "$file"
+}
+
+# Ensure we are in the repo root
+ROOT_DIR="$(git rev-parse --show-toplevel 2>/dev/null || true)"
+if [[ -z "$ROOT_DIR" ]]; then error_exit "Not a git repository."; fi
+cd "$ROOT_DIR"
+
+# Get the newly added and modified files (ignore deleted)
+mapfile -t STAGED_FILES < <(git diff --cached --name-only --diff-filter=ACMR)
+
+if [[ ${#STAGED_FILES[@]} -eq 0 ]]; then exit 0; fi
+
+# ---------------------------------------------------------
+# PNG setup
+# ---------------------------------------------------------
+PNG_COMPRESSOR=""
+if command -v oxipng >/dev/null 2>&1; then
+    PNG_COMPRESSOR="oxipng -o max"
+elif command -v optipng >/dev/null 2>&1; then
+    PNG_COMPRESSOR="optipng -o 7"
+fi
+
+# ---------------------------------------------------------
+# Main loop
+# ---------------------------------------------------------
+print_info "Checking ${#STAGED_FILES[@]} staged file(s)…"
+
+for file in "${STAGED_FILES[@]}"; do
+    if [[ ! -f "$file" ]]; then continue; fi
+
+    # TODO check
+    if contains_todo "$file"; then
+        error_exit "File $file contains 'TODO'! Remove or complete it before committing."
+    fi
+
+    # PNG optimisation
+    if [[ "$file" == *.png ]] && [[ -n "$PNG_COMPRESSOR" ]]; then
+        $PNG_COMPRESSOR "$file" > /dev/null 2>&1
+        git add "$file"
+        echo "  -> Optimised: $file"
+    fi
+done
+
+# ---------------------------------------------------------
+# Formatting
+# ---------------------------------------------------------
+# Filter staged files for those supported by Prettier
+# We use printf to pass the array cleanly to grep
+PRETTIER_FILES=$(printf "%s\n" "${STAGED_FILES[@]}" | grep -E '\.(ts|js|astro|md|json|css|scss)$' || true)
+if [[ -n "$PRETTIER_FILES" ]]; then
+    print_info "Auto-formatting with prettier…"
+    # Write changes in place
+    if ! echo "$PRETTIER_FILES" | xargs npx prettier --write --ignore-unknown > /dev/null 2>&1; then
+        error_exit "Prettier failed to format files."
+    fi
+
+    # Re-stage the modified files
+    echo "$PRETTIER_FILES" | xargs git add
+    print_success "Formatted and staged changes."
+fi
+
+# ---------------------------------------------------------
+# Type check and build
+# ---------------------------------------------------------
+print_info "Running build to verify types…"
+
+BUILD_LOG=$(mktemp)
+
+if ! npm run build > "$BUILD_LOG" 2>&1; then
+    echo -e "${RED}Build failed!:${NC}"
+    cat "$BUILD_LOG"
+    rm "$BUILD_LOG"
+    error_exit "Build failed. Please fix type errors before committing."
+fi
+
+rm "$BUILD_LOG"
+print_success "All checks passed. Committing…"
+exit 0

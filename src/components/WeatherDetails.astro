@@ -1,0 +1,75 @@
+<div class='weather-container'>
+    <div class='cloud'>☁️</div>
+    <div class='cloud'>☁️</div>
+    <div class='cloud'>☁️</div>
+    <div class='sun'>☀️</div>
+</div>
+
+<style>
+    .sun {
+        position: fixed;
+        top: calc(var(--space-lg) + 10px);
+        left: calc(var(--space-lg) + 28px);
+        z-index: -4;
+        animation: rotate 50s linear infinite;
+        font-size: 1rem;
+    }
+
+    @keyframes rotate {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .weather-container {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80%;
+        max-width: 1200px;
+        height: 100%;
+        pointer-events: none;
+    }
+
+    .cloud {
+        position: absolute;
+        z-index: 1;
+        font-size: 2.5rem;
+        user-select: none;
+    }
+
+    .cloud:nth-child(1) {
+        top: 2rem;
+        left: -6rem;
+        z-index: 1;
+        animation: float 4s ease-in-out infinite;
+    }
+
+    .cloud:nth-child(2) {
+        top: 5.75rem;
+        right: -4rem;
+        animation: float 5s ease-in-out infinite;
+        font-size: 1.875rem;
+    }
+
+    .cloud:nth-child(3) {
+        top: calc(var(--space-lg) + 20px);
+        left: -4rem;
+        z-index: -3;
+        animation: float 12s ease-in-out infinite;
+        font-size: 1.3rem;
+    }
+
+    .sun {
+        position: absolute;
+        top: 2.4rem;
+        left: -4.3rem;
+        z-index: -4;
+        animation: rotate 50s linear infinite;
+        font-size: 1rem;
+    }
+</style>

@@ -1,0 +1,17 @@
+semi = true
+trailingComma = "es5"
+singleQuote = false
+printWidth = 88
+tabWidth = 4
+useTabs = false
+arrowParens = "always"
+bracketSpacing = true
+bracketSameLine = false
+jsxSingleQuote = true
+endOfLine = "lf"
+
+plugins = ["prettier-plugin-astro", "prettier-plugin-css-order"]
+
+# Settings for https://github.com/Siilwyn/prettier-plugin-css-order
+cssDeclarationSorterOrder = "concentric-css"
+cssDeclarationSorterKeepOverrides = false

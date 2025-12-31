@@ -1,0 +1,85 @@
+---
+const title = "bunbu~ frequency analysis of japanese text ・ 日本語テキストの頻度分析";
+const description = "Analyse word frequency in Japanese text";
+
+import Action from "@/components/Action.astro";
+import AnimatedBackground from "@/components/AnimatedBackground.astro";
+import Header from "@/components/Header.astro";
+import HelpModal from "@/components/HelpModal.astro";
+import Layout from "@/layouts/Layout.astro";
+import SettingsModal from "@/components/SettingsModal.astro";
+import TextInput from "@/components/TextInput.astro";
+---
+
+<Layout title={title} description={description}>
+    <AnimatedBackground />
+    <main>
+        <div class='page-container'>
+            <Header />
+            <main class='container'>
+                <div class='content-box'>
+                    <h2>frequency analysis of japanese text</h2>
+                    <noscript>
+                        <div class='noscript-notice'>
+                            <h2>JavaScript is required</h2>
+                            <p>
+                                This application requires JavaScript to function. Please
+                                enable JavaScript in your browser settings and reload
+                                the page.
+                            </p>
+                        </div>
+                    </noscript>
+                    <div class='button-group'>
+                        <Action
+                            variant='secondary'
+                            as='button'
+                            id='pasteClipboardButton'
+                            icon='clipboard'>paste from clipboard</Action
+                        >
+                        <Action
+                            variant='secondary'
+                            as='button'
+                            id='importFileButton'
+                            icon='file'>import files</Action
+                        >
+                        <Action
+                            variant='secondary'
+                            as='button'
+                            id='loadDemoButton'
+                            icon='person'>load sample text</Action
+                        >
+                    </div>
+                    <TextInput />
+                    <input
+                        class='hidden'
+                        type='file'
+                        id='file-input'
+                        accept='.txt,.srt,.ass,.vtt,.sub,.smi,.ssa,.json,.md,.csv,.tsv'
+                        multiple
+                    />
+                    <div class='primary-action'>
+                        <Action
+                            as='button'
+                            variant='primary'
+                            id='analyzeButton'
+                            aria-live='polite'
+                            aria-busy='true'
+                            disabled
+                        >
+                            <span class='button-text'>loading required files...</span>
+                        </Action>
+                    </div>
+                    <div id='result' class='hidden'>
+                        <div class='result-controls'>
+                            <Action as='button' id='exportButton'>export to csv</Action>
+                        </div>
+                        <p id='totalWords'></p>
+                        <div id='wordListContainer'></div>
+                    </div>
+                </div>
+            </main>
+        </div>
+        <SettingsModal />
+        <HelpModal />
+    </main>
+</Layout>

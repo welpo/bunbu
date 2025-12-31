@@ -1,0 +1,118 @@
+---
+interface Props {
+    id: string;
+    title: string;
+}
+
+const { id, title } = Astro.props;
+---
+
+<div id={id} class='modal'>
+    <a href='#' class='modal-backdrop'></a>
+    <div class='modal-content'>
+        <div class='modal-header'>
+            <h3>{title}</h3>
+            <a href='#' class='modal-close'>×</a>
+        </div>
+        <div class='modal-body'>
+            <slot />
+        </div>
+    </div>
+</div>
+
+<style>
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+        background-color: rgba(0, 0, 0, 0.4);
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+    }
+
+    .modal:target {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .modal-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .modal-content {
+        display: flex;
+        position: relative;
+        flex-direction: column;
+        margin: auto;
+        box-shadow: var(--box-shadow);
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius);
+        background-color: var(--box-bg-color);
+        width: calc(100% - var(--space-md) * 2);
+        max-width: 26em;
+        max-height: 90vh;
+    }
+
+    @media (max-width: 480px) {
+        .modal-content {
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            width: calc(100% - var(--space-sm) * 2);
+            max-height: 85vh;
+        }
+    }
+
+    .modal-body {
+        padding: 0 var(--space-md) var(--space-md);
+        overflow-y: auto;
+    }
+
+    .modal-header {
+        display: flex;
+        position: sticky;
+        top: 0;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 1;
+        margin-bottom: 0;
+        border-radius: var(--border-radius) var(--border-radius) 0 0;
+        background-color: var(--box-bg-color);
+        padding: var(--space-md) var(--space-md) var(--space-sm);
+        color: var(--accent-color);
+    }
+
+    .modal-header h3 {
+        margin: 0;
+        font-size: 1rem;
+        font-family: var(--header-font);
+    }
+
+    .modal-close {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-width: var(--touch-target-min);
+        min-height: var(--touch-target-min);
+        color: var(--heading-color);
+        font-weight: bold;
+        font-size: 1.25rem;
+        line-height: 1;
+        font-family: var(--header-font);
+        text-decoration: none;
+    }
+
+    .modal-close:hover,
+    .modal-close:focus,
+    .modal-backdrop:hover ~ .modal-content .modal-close {
+        cursor: pointer;
+        color: var(--button-hover-color);
+        text-decoration: none;
+    }
+</style>
